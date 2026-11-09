@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="PodDesk.App/PodDesk.App.csproj" />
+  <Project Path="PodDesk.Bluetooth/PodDesk.Bluetooth.csproj" />
+  <Project Path="PodDesk.Probe/PodDesk.Probe.csproj" />
+</Solution>

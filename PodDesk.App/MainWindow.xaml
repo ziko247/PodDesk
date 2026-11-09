@@ -1,0 +1,231 @@
+<Window x:Class="PodDesk.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="PodDesk" Width="780" Height="716" MinWidth="660" MinHeight="550"
+ WindowStartupLocation="CenterScreen" Background="#F1F6F4" FontFamily="Segoe UI" FontSize="14">
+  <Window.InputBindings>
+    <KeyBinding Key="Q" Modifiers="Control" Command="ApplicationCommands.Close"/>
+  </Window.InputBindings>
+  <Window.CommandBindings>
+    <CommandBinding Command="ApplicationCommands.Close" Executed="ExitRequested"/>
+  </Window.CommandBindings>
+  <Window.Resources>
+    <SolidColorBrush x:Key="Ink" Color="#152D2C"/>
+    <SolidColorBrush x:Key="Muted" Color="#4C6461"/>
+    <SolidColorBrush x:Key="Accent" Color="#0C6B59"/>
+    <Style TargetType="TextBlock">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+    </Style>
+    <Style x:Key="Caption" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+      <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style x:Key="Section" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="23"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style x:Key="Panel" TargetType="Border">
+      <Setter Property="Background" Value="White"/>
+      <Setter Property="BorderBrush" Value="#D7E4DF"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="CornerRadius" Value="14"/>
+    </Style>
+    <Style x:Key="ModeButton" TargetType="Button">
+      <Setter Property="Background" Value="#F2F8F5"/>
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="BorderBrush" Value="#C9DDD5"/>
+      <Setter Property="Padding" Value="10,8"/>
+      <Setter Property="Margin" Value="0,0,8,0"/>
+      <Setter Property="MinHeight" Value="48"/>
+      <Setter Property="FontSize" Value="13"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border x:Name="Tile" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
+                    Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Tile" Property="BorderBrush" Value="#0C6B59"/></Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Tile" Property="BorderThickness" Value="2"/>
+                <Setter TargetName="Tile" Property="BorderBrush" Value="#0C6B59"/></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Tile" Property="Opacity" Value=".70"/></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="TabItem">
+      <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+      <Setter Property="FontWeight" Value="SemiBold"/>
+      <Setter Property="Padding" Value="14,10"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="TabItem">
+            <Border x:Name="TabEdge" Background="Transparent" BorderThickness="0,0,0,2"
+              BorderBrush="Transparent" Padding="{TemplateBinding Padding}">
+              <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter TargetName="TabEdge" Property="BorderBrush" Value="{StaticResource Accent}"/>
+                <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="TabEdge" Property="Background" Value="#DAEDE5"/></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Window.Resources>
+  <Grid Margin="20,16,20,12">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <Border Padding="22,17" CornerRadius="14">
+      <Border.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+          <GradientStop Color="#122F31" Offset="0"/>
+          <GradientStop Color="#174941" Offset="1"/>
+        </LinearGradientBrush>
+      </Border.Background>
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="270"/></Grid.ColumnDefinitions>
+        <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
+          <TextBlock Text="P O D D E S K" Foreground="#B2EAD5" FontWeight="SemiBold" FontSize="11"/>
+          <TextBlock Text="AirPods dashboard" Foreground="White" FontSize="28" FontWeight="SemiBold" Margin="0,2,0,3"/>
+          <TextBlock x:Name="ModelLabel" Foreground="#D1E7E0" TextWrapping="Wrap" FontSize="13"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+          <Label Target="{Binding ElementName=Devices}" Content="_Device" Foreground="#E2F3EC" Padding="0,0,0,3" FontSize="12"/>
+          <ComboBox x:Name="Devices" Height="30" DisplayMemberPath="Label" SelectedValuePath="Key"
+            AutomationProperties.Name="AirPods device" SelectionChanged="DeviceChanged" />
+          <TextBlock x:Name="ConnectionLabel" Foreground="#D1E7E0" Margin="0,5,0,0" TextWrapping="Wrap" FontSize="12"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0" Padding="0" Margin="0,7,0,0">
+      <TabItem Header="_Overview" AutomationProperties.Name="Overview">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Margin="0,14,0,0">
+            <DockPanel Margin="0,0,7,0">
+              <Button x:Name="FindBattery" DockPanel.Dock="Right" Content="_Find battery" Padding="10,4"
+                Click="FindBatteryClicked" Visibility="Collapsed"/>
+              <TextBlock Style="{StaticResource Section}" Text="Battery"/>
+            </DockPanel>
+            <TextBlock x:Name="BatterySource" Style="{StaticResource Caption}" Margin="0,3,0,10"/>
+            <Border x:Name="BatterySearchPanel" Style="{StaticResource Panel}" Padding="13,10" Margin="0,0,7,10"
+                    Visibility="Collapsed">
+              <StackPanel>
+                <TextBlock Style="{StaticResource Caption}" Text="Seat both earbuds, close the case for a few seconds, then open it near the PC. Keep other AirPods cases closed."/>
+                <TextBlock x:Name="BatterySearchStatus" Style="{StaticResource Caption}" Margin="0,5,0,7"/>
+                <DockPanel>
+                  <Button x:Name="UseBatteryReport" DockPanel.Dock="Right" Content="_Use and remember" Padding="10,4"
+                    Click="LinkClicked" IsEnabled="False" AutomationProperties.Name="Use this battery report and remember the selected AirPods"/>
+                  <ComboBox x:Name="BatteryReport" Height="28" Margin="0,0,10,0" DisplayMemberPath="Label"
+                    SelectedValuePath="Address" IsEnabled="False" SelectionChanged="BatteryReportChanged"
+                    AutomationProperties.Name="Nearby battery reports for the selected AirPods"/>
+                </DockPanel>
+              </StackPanel>
+            </Border>
+            <ItemsControl x:Name="BatteryCards">
+              <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Style="{StaticResource Panel}" Padding="13,12" Margin="0,0,7,0"
+                          AutomationProperties.Name="{Binding Name}">
+                    <StackPanel>
+                      <DockPanel>
+                        <Border Background="#E3F3ED" Width="27" Height="27" CornerRadius="7" Margin="0,0,7,0" DockPanel.Dock="Left">
+                          <TextBlock Text="{Binding Glyph}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Foreground="{StaticResource Accent}" FontWeight="Bold" FontSize="12"/>
+                        </Border>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                      </DockPanel>
+                      <TextBlock Text="{Binding Value}" FontSize="26" FontWeight="SemiBold" Margin="0,8,0,4" TextWrapping="Wrap"/>
+                      <ProgressBar Value="{Binding Level, Mode=OneWay}" Maximum="100" Height="5" BorderThickness="0"
+                         Foreground="{StaticResource Accent}" Background="#E4ECE8" Focusable="False"
+                         AutomationProperties.Name="{Binding Name}">
+                        <ProgressBar.Style>
+                          <Style TargetType="ProgressBar">
+                            <Style.Triggers><DataTrigger Binding="{Binding Value}" Value="Unavailable">
+                              <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger></Style.Triggers>
+                          </Style>
+                        </ProgressBar.Style>
+                      </ProgressBar>
+                      <TextBlock Text="{Binding Detail}" Margin="0,7,0,2" FontWeight="SemiBold">
+                        <TextBlock.Style>
+                          <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+                            <Style.Triggers><DataTrigger Binding="{Binding Stale}" Value="True">
+                              <Setter Property="Foreground" Value="#8A4D15"/>
+                            </DataTrigger></Style.Triggers>
+                          </Style>
+                        </TextBlock.Style>
+                      </TextBlock>
+                      <TextBlock Text="{Binding Footnote}" Style="{StaticResource Caption}" FontSize="11"/>
+                    </StackPanel>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Border Style="{StaticResource Panel}" Padding="15,13" Margin="0,13,7,5">
+              <StackPanel>
+                <TextBlock Style="{StaticResource Section}" Text="Listening modes"/>
+                <TextBlock x:Name="ModeStatus" FontWeight="SemiBold" Foreground="{StaticResource Accent}" Margin="0,3,0,9"
+                  AutomationProperties.LiveSetting="Polite"/>
+                <UniformGrid Rows="1" Columns="4" Margin="0,0,-8,0">
+                  <Button x:Name="OffButton" Style="{StaticResource ModeButton}" Click="ModeClicked" Content="_Off" AutomationProperties.Name="Off" Tag="Off"/>
+                  <Button x:Name="TransparencyButton" Style="{StaticResource ModeButton}" Click="ModeClicked" Content="_Transparency" AutomationProperties.Name="Transparency" Tag="Transparency"/>
+                  <Button x:Name="AdaptiveButton" Style="{StaticResource ModeButton}" Click="ModeClicked" Content="_Adaptive Audio" AutomationProperties.Name="Adaptive Audio" Tag="AdaptiveAudio"/>
+                  <Button x:Name="AncButton" Style="{StaticResource ModeButton}" Click="ModeClicked" AutomationProperties.Name="Active Noise Cancellation" Tag="NoiseCancellation">
+                    <TextBlock Text="Active Noise Cancellation" TextAlignment="Center" TextWrapping="Wrap"/>
+                  </Button>
+                </UniformGrid>
+                <TextBlock x:Name="ModeDetails" Style="{StaticResource Caption}" Margin="0,9,0,0"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem Header="A_ccessibility" AutomationProperties.Name="Accessibility">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <StackPanel Margin="0,14,7,0">
+            <TextBlock Style="{StaticResource Section}" Text="AirPods Accessibility"/>
+            <TextBlock Style="{StaticResource Caption}" Text="Settings documented for AirPods 5 on iOS 27. Values appear when reported by the device." Margin="0,3,0,12"/>
+            <ItemsControl x:Name="AccessibilityRows">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Style="{StaticResource Panel}" Padding="13,10" Margin="0,0,0,7">
+                    <Grid>
+                      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="230"/></Grid.ColumnDefinitions>
+                      <StackPanel Margin="0,0,12,0">
+                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Description}" Style="{StaticResource Caption}" Margin="0,3,0,0"/>
+                      </StackPanel>
+                      <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Value}" FontWeight="SemiBold" Foreground="{StaticResource Accent}"/>
+                        <TextBlock Text="{Binding Status}" Style="{StaticResource Caption}" Margin="0,3,0,0"/>
+                      </StackPanel>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+
+    <Grid Grid.Row="2" Margin="0,8,0,0">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <TextBlock x:Name="Footer" Style="{StaticResource Caption}" VerticalAlignment="Center" Text="Closing the window keeps PodDesk in the tray."/>
+      <CheckBox x:Name="DemoCase" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,14,0" Visibility="Collapsed"
+        Content="Demo case open" IsChecked="True" Checked="DemoCaseChanged" Unchecked="DemoCaseChanged"/>
+      <CheckBox x:Name="DemoToggle" Grid.Column="2" VerticalAlignment="Center" Content="De_mo mode"
+        Checked="DemoChanged" Unchecked="DemoChanged" AutomationProperties.Name="Demo mode"/>
+    </Grid>
+  </Grid>
+</Window>
