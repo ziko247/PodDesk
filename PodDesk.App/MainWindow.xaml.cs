@@ -25,7 +25,7 @@ public partial class MainWindow : Window
     private AccessRow[] rows = [];
     private bool rendering;
     private bool quitting;
-    private static readonly Brush ActiveBrush = new SolidColorBrush(Color.FromRgb(202, 239, 225));
+    private static readonly Brush ActiveBrush = new SolidColorBrush(Color.FromRgb(54, 81, 121));
 
     public MainWindow()
     {
@@ -52,6 +52,34 @@ public partial class MainWindow : Window
             Render();
             if (monitor != null) await monitor.TickAsync();
         };
+    }
+
+    private void TitleBarPressed(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount == 2) ToggleWindowSize();
+        else DragMove();
+    }
+
+    private void TitleBarMenuRequested(object sender, MouseButtonEventArgs e) =>
+        SystemCommands.ShowSystemMenu(this, PointToScreen(e.GetPosition(this)));
+
+    private void MinimizeClicked(object sender, RoutedEventArgs e) => SystemCommands.MinimizeWindow(this);
+
+    private void MaximizeClicked(object sender, RoutedEventArgs e) => ToggleWindowSize();
+
+    private void CloseClicked(object sender, RoutedEventArgs e) => Close();
+
+    private void ToggleWindowSize()
+    {
+        if (WindowState == WindowState.Maximized) SystemCommands.RestoreWindow(this);
+        else SystemCommands.MaximizeWindow(this);
+    }
+
+    protected override void OnStateChanged(EventArgs e)
+    {
+        base.OnStateChanged(e);
+        if (WindowSizeButton != null)
+            WindowSizeButton.Content = WindowState == WindowState.Maximized ? "\uE923" : "\uE922";
     }
 
     private void Render()

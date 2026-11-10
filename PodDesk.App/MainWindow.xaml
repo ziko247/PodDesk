@@ -2,7 +2,7 @@
  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
  Title="PodDesk" Width="780" Height="716" MinWidth="660" MinHeight="550"
- WindowStartupLocation="CenterScreen" Background="#F1F6F4" FontFamily="Segoe UI" FontSize="14">
+ WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" ResizeMode="CanResizeWithGrip" Background="Transparent" FontFamily="Segoe UI Variable, Segoe UI" FontSize="14">
   <Window.InputBindings>
     <KeyBinding Key="Q" Modifiers="Control" Command="ApplicationCommands.Close"/>
   </Window.InputBindings>
@@ -10,9 +10,69 @@
     <CommandBinding Command="ApplicationCommands.Close" Executed="ExitRequested"/>
   </Window.CommandBindings>
   <Window.Resources>
-    <SolidColorBrush x:Key="Ink" Color="#152D2C"/>
-    <SolidColorBrush x:Key="Muted" Color="#4C6461"/>
-    <SolidColorBrush x:Key="Accent" Color="#0C6B59"/>
+    <SolidColorBrush x:Key="Ink" Color="#F4F5FA"/>
+    <SolidColorBrush x:Key="Muted" Color="#B5BDCD"/>
+    <SolidColorBrush x:Key="Accent" Color="#ADCDFF"/>
+    <LinearGradientBrush x:Key="Glass" StartPoint="0,0" EndPoint="0,1">
+      <GradientStop Color="#28D4E2FF" Offset="0"/>
+      <GradientStop Color="#0AB4CBFA" Offset="1"/>
+    </LinearGradientBrush>
+    <Style TargetType="CheckBox">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+    </Style>
+    <Style TargetType="ComboBoxItem">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Padding" Value="10,7"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ComboBoxItem">
+            <Border x:Name="Option" Background="Transparent" CornerRadius="7" Padding="{TemplateBinding Padding}">
+              <ContentPresenter/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsSelected" Value="True"><Setter TargetName="Option" Property="Background" Value="#263957"/></Trigger>
+              <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="Option" Property="Background" Value="#364D70"/></Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="ComboBox">
+      <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ComboBox">
+            <Grid>
+              <ToggleButton Focusable="False" ClickMode="Press"
+                            IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                <ToggleButton.Template>
+                  <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="Surface" Background="#25344863" BorderBrush="#52AFC6EF" BorderThickness="1" CornerRadius="12">
+                      <Path Data="M0,0 L4,4 L8,0" Stroke="#C4CDDF" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,13,0"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                      <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Background" Value="#464D6991"/></Trigger>
+                    </ControlTemplate.Triggers>
+                  </ControlTemplate>
+                </ToggleButton.Template>
+              </ToggleButton>
+              <ContentPresenter Margin="12,0,29,0" VerticalAlignment="Center" IsHitTestVisible="False"
+                                Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+              <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True" IsOpen="{TemplateBinding IsDropDownOpen}">
+                <Border Background="#171E2D" BorderBrush="#657997" BorderThickness="1" CornerRadius="12" Padding="4" Margin="0,4,0,0"
+                        MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                  <ScrollViewer VerticalScrollBarVisibility="Auto"><ItemsPresenter/></ScrollViewer>
+                </Border>
+              </Popup>
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value=".55"/></Trigger>
+      </Style.Triggers>
+    </Style>
     <Style TargetType="TextBlock">
       <Setter Property="Foreground" Value="{StaticResource Ink}"/>
     </Style>
@@ -26,15 +86,15 @@
       <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
     <Style x:Key="Panel" TargetType="Border">
-      <Setter Property="Background" Value="White"/>
-      <Setter Property="BorderBrush" Value="#D7E4DF"/>
+      <Setter Property="Background" Value="{StaticResource Glass}"/>
+      <Setter Property="BorderBrush" Value="#38D5E5FF"/>
       <Setter Property="BorderThickness" Value="1"/>
-      <Setter Property="CornerRadius" Value="14"/>
+      <Setter Property="CornerRadius" Value="20"/>
     </Style>
     <Style x:Key="ModeButton" TargetType="Button">
-      <Setter Property="Background" Value="#F2F8F5"/>
+      <Setter Property="Background" Value="#18B4CBFA"/>
       <Setter Property="Foreground" Value="{StaticResource Ink}"/>
-      <Setter Property="BorderBrush" Value="#C9DDD5"/>
+      <Setter Property="BorderBrush" Value="#38D5E5FF"/>
       <Setter Property="Padding" Value="10,8"/>
       <Setter Property="Margin" Value="0,0,8,0"/>
       <Setter Property="MinHeight" Value="48"/>
@@ -44,63 +104,94 @@
         <Setter.Value>
           <ControlTemplate TargetType="Button">
             <Border x:Name="Tile" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
-                    Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                    Background="{TemplateBinding Background}" CornerRadius="13" Padding="{TemplateBinding Padding}">
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True"/>
             </Border>
             <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Tile" Property="BorderBrush" Value="#0C6B59"/></Trigger>
+              <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Tile" Property="BorderBrush" Value="#ADCDFF"/></Trigger>
               <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Tile" Property="BorderThickness" Value="2"/>
-                <Setter TargetName="Tile" Property="BorderBrush" Value="#0C6B59"/></Trigger>
-              <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Tile" Property="Opacity" Value=".70"/></Trigger>
+                <Setter TargetName="Tile" Property="BorderBrush" Value="#ADCDFF"/></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Tile" Property="Opacity" Value=".65"/></Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
       </Setter>
     </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource ModeButton}">
+      <Setter Property="MinHeight" Value="32"/>
+      <Setter Property="Margin" Value="0"/>
+    </Style>
+    <Style x:Key="CaptionButton" TargetType="Button" BasedOn="{StaticResource ModeButton}">
+      <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+      <Setter Property="FontSize" Value="10"/>
+      <Setter Property="MinHeight" Value="28"/>
+      <Setter Property="Width" Value="34"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="Margin" Value="4,0,0,0"/>
+    </Style>
     <Style TargetType="TabItem">
       <Setter Property="Foreground" Value="{StaticResource Muted}"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
-      <Setter Property="Padding" Value="14,10"/>
+      <Setter Property="Padding" Value="16,8"/><Setter Property="Margin" Value="0,0,6,0"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="TabItem">
-            <Border x:Name="TabEdge" Background="Transparent" BorderThickness="0,0,0,2"
+            <Border x:Name="TabEdge" Background="Transparent" CornerRadius="13" BorderThickness="1"
               BorderBrush="Transparent" Padding="{TemplateBinding Padding}">
               <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsSelected" Value="True">
-                <Setter TargetName="TabEdge" Property="BorderBrush" Value="{StaticResource Accent}"/>
+                <Setter TargetName="TabEdge" Property="BorderBrush" Value="#55ADCDFF"/><Setter TargetName="TabEdge" Property="Background" Value="#23ADCDFF"/>
                 <Setter Property="Foreground" Value="{StaticResource Ink}"/>
               </Trigger>
-              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="TabEdge" Property="Background" Value="#DAEDE5"/></Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="TabEdge" Property="Background" Value="#35ADCDFF"/></Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
       </Setter>
     </Style>
   </Window.Resources>
-  <Grid Margin="20,16,20,12">
+  <Border CornerRadius="24" BorderBrush="#5CCBD9F5" BorderThickness="1">
+  <Border.Background>
+    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+      <GradientStop Color="#E1202636" Offset="0"/>
+      <GradientStop Color="#EF0B0C12" Offset=".49"/>
+      <GradientStop Color="#EC080A10" Offset="1"/>
+    </LinearGradientBrush>
+  </Border.Background>
+  <Grid>
+    <Grid.RowDefinitions><RowDefinition Height="42"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <DockPanel Background="Transparent" Margin="17,5,9,0" MouseLeftButtonDown="TitleBarPressed"
+               MouseRightButtonUp="TitleBarMenuRequested">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+        <Button Style="{StaticResource CaptionButton}" Click="MinimizeClicked" AutomationProperties.Name="Minimize" Content="&#xE921;"/>
+        <Button x:Name="WindowSizeButton" Style="{StaticResource CaptionButton}" Click="MaximizeClicked" AutomationProperties.Name="Maximize or restore" Content="&#xE922;"/>
+        <Button Style="{StaticResource CaptionButton}" Click="CloseClicked" AutomationProperties.Name="Close to tray" Content="&#xE8BB;"/>
+      </StackPanel>
+      <TextBlock Text="PodDesk" FontSize="12" Foreground="{StaticResource Muted}" VerticalAlignment="Center" IsHitTestVisible="False"/>
+    </DockPanel>
+    <Grid Grid.Row="1" Margin="20,3,20,15">
     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-    <Border Padding="22,17" CornerRadius="14">
+    <Border Style="{StaticResource Panel}" Padding="22,17">
       <Border.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-          <GradientStop Color="#122F31" Offset="0"/>
-          <GradientStop Color="#174941" Offset="1"/>
+          <GradientStop Color="#555D76A4" Offset="0"/>
+          <GradientStop Color="#0E96B7F7" Offset="1"/>
         </LinearGradientBrush>
       </Border.Background>
       <Grid>
         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="270"/></Grid.ColumnDefinitions>
         <StackPanel VerticalAlignment="Center" Margin="0,0,16,0">
-          <TextBlock Text="P O D D E S K" Foreground="#B2EAD5" FontWeight="SemiBold" FontSize="11"/>
+          <TextBlock Text="P O D D E S K" Foreground="#ADCDFF" FontWeight="SemiBold" FontSize="11"/>
           <TextBlock Text="AirPods dashboard" Foreground="White" FontSize="28" FontWeight="SemiBold" Margin="0,2,0,3"/>
-          <TextBlock x:Name="ModelLabel" Foreground="#D1E7E0" TextWrapping="Wrap" FontSize="13"/>
+          <TextBlock x:Name="ModelLabel" Foreground="#C4CDDF" TextWrapping="Wrap" FontSize="13"/>
         </StackPanel>
         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-          <Label Target="{Binding ElementName=Devices}" Content="_Device" Foreground="#E2F3EC" Padding="0,0,0,3" FontSize="12"/>
-          <ComboBox x:Name="Devices" Height="30" DisplayMemberPath="Label" SelectedValuePath="Key"
+          <Label Target="{Binding ElementName=Devices}" Content="_Device" Foreground="#E2E8F5" Padding="0,0,0,3" FontSize="12"/>
+          <ComboBox x:Name="Devices" MinHeight="34" DisplayMemberPath="Label" SelectedValuePath="Key"
             AutomationProperties.Name="AirPods device" SelectionChanged="DeviceChanged" />
-          <TextBlock x:Name="ConnectionLabel" Foreground="#D1E7E0" Margin="0,5,0,0" TextWrapping="Wrap" FontSize="12"/>
+          <TextBlock x:Name="ConnectionLabel" Foreground="#C4CDDF" Margin="0,5,0,0" TextWrapping="Wrap" FontSize="12"/>
         </StackPanel>
       </Grid>
     </Border>
@@ -123,7 +214,7 @@
                 <DockPanel>
                   <Button x:Name="UseBatteryReport" DockPanel.Dock="Right" Content="_Use and remember" Padding="10,4"
                     Click="LinkClicked" IsEnabled="False" AutomationProperties.Name="Use this battery report and remember the selected AirPods"/>
-                  <ComboBox x:Name="BatteryReport" Height="28" Margin="0,0,10,0" DisplayMemberPath="Label"
+                  <ComboBox x:Name="BatteryReport" MinHeight="34" Margin="0,0,10,0" DisplayMemberPath="Label"
                     SelectedValuePath="Address" IsEnabled="False" SelectionChanged="BatteryReportChanged"
                     AutomationProperties.Name="Nearby battery reports for the selected AirPods"/>
                 </DockPanel>
@@ -137,15 +228,15 @@
                           AutomationProperties.Name="{Binding Name}">
                     <StackPanel>
                       <DockPanel>
-                        <Border Background="#E3F3ED" Width="27" Height="27" CornerRadius="7" Margin="0,0,7,0" DockPanel.Dock="Left">
+                        <Border Background="#2DADCFFF" Width="27" Height="27" CornerRadius="7" Margin="0,0,7,0" DockPanel.Dock="Left">
                           <TextBlock Text="{Binding Glyph}" HorizontalAlignment="Center" VerticalAlignment="Center"
                             Foreground="{StaticResource Accent}" FontWeight="Bold" FontSize="12"/>
                         </Border>
                         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" TextWrapping="Wrap"/>
                       </DockPanel>
-                      <TextBlock Text="{Binding Value}" FontSize="26" FontWeight="SemiBold" Margin="0,8,0,4" TextWrapping="Wrap"/>
+                      <TextBlock Text="{Binding Value}" FontSize="29" FontWeight="SemiBold" Margin="0,8,0,4" TextWrapping="Wrap"/>
                       <ProgressBar Value="{Binding Level, Mode=OneWay}" Maximum="100" Height="5" BorderThickness="0"
-                         Foreground="{StaticResource Accent}" Background="#E4ECE8" Focusable="False"
+                         Foreground="{StaticResource Accent}" Background="#35ADCFFF" Focusable="False"
                          AutomationProperties.Name="{Binding Name}">
                         <ProgressBar.Style>
                           <Style TargetType="ProgressBar">
@@ -159,7 +250,7 @@
                         <TextBlock.Style>
                           <Style TargetType="TextBlock" BasedOn="{StaticResource Caption}">
                             <Style.Triggers><DataTrigger Binding="{Binding Stale}" Value="True">
-                              <Setter Property="Foreground" Value="#8A4D15"/>
+                              <Setter Property="Foreground" Value="#FFD291"/>
                             </DataTrigger></Style.Triggers>
                           </Style>
                         </TextBlock.Style>
@@ -227,5 +318,7 @@
       <CheckBox x:Name="DemoToggle" Grid.Column="2" VerticalAlignment="Center" Content="De_mo mode"
         Checked="DemoChanged" Unchecked="DemoChanged" AutomationProperties.Name="Demo mode"/>
     </Grid>
+    </Grid>
   </Grid>
+  </Border>
 </Window>

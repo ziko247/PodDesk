@@ -4,6 +4,7 @@ A native C# and WPF dashboard for AirPods on Windows. The dashboard and notifica
 
 ## Run or build
 
+- Open `Run-Glass\PodDesk.exe` for the dark glass interface. Keep the files in that folder together.
 - Open `Run\PodDesk.exe` from File Explorer for the hardware-tested battery build. Keep its files together. This x64 build uses the .NET 10 Desktop Runtime already present on the test PC.
 - `Run-AutoBattery\PodDesk.exe` is the new build with remembered battery tracking. The source built and the simulated matching checks passed. Windows Application Control blocked its launch on this PC with error `0x800711C7`, so automatic case reopening still needs a live test. Use `Run` for the working dashboard on this PC.
 - Close the window to keep monitoring from the notification area. Double-click the PodDesk icon to reopen it. Right-click it for battery, listening modes, and **Exit**. **Ctrl+Q** also exits from the window.
